@@ -1,32 +1,34 @@
-const { Tag } = require('../models');
+// import models
+const Product = require('./Product');
+const Category = require('./Category');
+const Tag = require('./Tag');
+const ProductTag = require('./ProductTag');
 
-const tagData = [
-  {
-    tag_name: 'rock music',
-  },
-  {
-    tag_name: 'pop music',
-  },
-  {
-    tag_name: 'blue',
-  },
-  {
-    tag_name: 'red',
-  },
-  {
-    tag_name: 'green',
-  },
-  {
-    tag_name: 'white',
-  },
-  {
-    tag_name: 'gold',
-  },
-  {
-    tag_name: 'pop culture',
-  },
-];
+// Products belongsTo Category
+Product.belongsTo(Category, {
+  foreignKey: 'category_id'
+});
+// Categories have many Products
+Category.hasMany(Product, {
+  foreignKey: 'category_id',
+  onDelete: 'CASCADE',
+});
+// Products belongToMany Tags (through ProductTag)
+Product.belongsToMany(Tag, {
+  through: ProductTag,
+  as: 'productTag_products',
+  foreignKey: 'product_id'
+});
+// Tags belongToMany Products (through ProductTag)
+Tag.belongsToMany(Product, {
+  through: ProductTag,
+  as: 'productTag_products',
+  foreignKey: 'tag_id'
+})
 
-const seedTags = () => Tag.bulkCreate(tagData);
-
-module.exports = seedTags;
+module.exports = {
+  Product,
+  Category,
+  Tag,
+  ProductTag,
+};
